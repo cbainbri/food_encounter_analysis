@@ -86,6 +86,16 @@ Tkinter + Matplotlib GUI (Richards Viewer v5) for visualizing bootstrap analysis
 pip install -r requirements.txt
 ```
 
+### Download the SAM model weights
+
+`automatic_mask_borders.py` requires the Segment Anything Model (SAM) checkpoint to auto-generate food masks. The weights file is ~1.2 GB and is not stored in git — run this once after installing:
+
+```
+python download_models.py
+```
+
+This downloads `sam_vit_l_0b3195.pth` from Meta's servers into the `segmentation/` folder next to the script. `automatic_mask_borders.py` detects it automatically on launch — no configuration needed. If the file is already present it will not re-download.
+
 > **Linux users:** Tkinter is not pip-installable. Install via `sudo apt-get install python3-tk`.
 >
-> **SAM / GPU:** `automatic_mask_borders.py` can use Segment Anything for auto-masking. This requires a SAM checkpoint (`.pth`) placed in a `./segmentation/` folder next to the script. The app runs without it. The default torch install is CPU-only — see [PyTorch installation](https://pytorch.org/get-started/locally/) for GPU builds.
+> **GPU:** The default torch install is CPU-only. See [PyTorch installation](https://pytorch.org/get-started/locally/) for GPU builds. GPU is not required — SAM runs on CPU, just slower.

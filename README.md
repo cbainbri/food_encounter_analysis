@@ -7,7 +7,8 @@ Analysis pipeline for C. elegans food encounter experiments. Takes raw tracked C
 ```
 Raw tracking CSVs
   → automatic_mask_borders.py   (create food mask, flag centroid/nose on food)
-  → merge_files.py              (wide → long format, compute food_encounter)
+  → tracking_pipeline/prep_track_data.py  (collect finished tracks as PC#_<folder>.csv)
+  → tracking_pipeline/merge_files.py      (wide → long format, compute food_encounter)
   → bootstrap_food.py           (Richards curve fitting + bootstrap)
   → permutation_food.py         (permutation testing on bootstrap results)
   → graph_viewer_food.py        (visualize fits, traces, violins)
@@ -29,15 +30,8 @@ Optionally uses a SAM (Segment Anything) checkpoint from `./segmentation/` for a
 
 ---
 
-### `merge_files.py`
-Tkinter GUI that converts wide-format tracked CSVs (one column group per worm) into a single long-format composite CSV. Supports manual metadata entry or automatic metadata inference from standardized filenames (`PC1_5.28.2025_m_wt_3hr`).
-
-Key output column: `food_encounter` — labeled `'food'` only at the frame where the nose first crosses onto food while the centroid is still off food (true biological entry event).
-
-Also supports appending new assays to an existing composite.
-
-**Input:** directory of wide-format CSVs (output of tracking pipeline)
-**Output:** `composite.csv` (long format, one row per worm per frame)
+### Building `composite.csv`
+`merge_files.py` (and the `prep_track_data.py` step before it) now live in [tracking_pipeline](https://github.com/cbainbri/tracking_pipeline), shared with opto analysis. It computes the `food_encounter` column — labeled `'food'` only at the frame where the nose first crosses onto food while the centroid is still off food (true biological entry event).
 
 ---
 
@@ -50,7 +44,7 @@ Produces a permutation package containing:
 - `off_food_individual_baselines.csv`
 - `metadata.json`
 
-**Input:** `composite.csv` from `merge_files.py`
+**Input:** `composite.csv` from `tracking_pipeline/merge_files.py`
 **Output:** bootstrap results directory + permutation package
 
 ---
